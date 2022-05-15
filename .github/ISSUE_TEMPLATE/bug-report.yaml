@@ -1,0 +1,94 @@
+name: Bug Report
+description: Report a bug of the Bot
+title: "[BUG] TITLE"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## IMPORTANT NOTICES BEFORE CREATING A BUG:
+          - Only report if not reported ([Issues](https://github.com/FlexGamesGitHub/FlexBot/issues))
+          - Also edit the title
+          - Fill out everything that is required (not only with the *, also required per context)
+  - type: input
+    attributes:
+      label: "Created enhancement required or in context for this?"
+      description: "If yes, please enter"
+      placeholder: "#123"
+      value: "No"
+  - type: markdown
+    attributes:
+      value: "## THE BUG"
+  - type: textarea
+    attributes:
+      label: "Reproduce"
+      description: "Clear steps to reproduce"
+      render: cfg
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "What should happen and what happened"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: "If applicable, add screenshots here"
+  - type: markdown
+    attributes:
+      value: "## CLIENT & ENDPOINT INFORMATION"
+  - type: dropdown
+    attributes:
+      label: Client
+      description: "Please enter the used client"
+      options: 
+        - BetterDiscord
+        - Discord
+        - Chrome
+        - Firefox
+        - Opera
+        - "Opera GX"
+        - "Microsoft Edge"
+        - "Internet Explorer"
+        - Ecosia
+        - "Other (Please enter below)"
+    validations: 
+      required: true
+  - type: input
+    attributes:
+      label: "Other Client"
+  - type: input
+    attributes:
+      label: "Client Versions"
+      description: "Please enter the full version of the client + the version of your OPERATING SYSTEM"
+      placeholder: "Canary 128333 (b818ae7), BetterDiscord 1.5.3, Windows 10"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "BetterDiscord Plugins"
+      description: "Please list (if installed) all relevant Plugin here"
+      render: yaml
+      value: "None"
+  - type: markdown
+    attributes:
+      value: "## ADDITIONAL CONTEXT & CHECKOUT"
+  - type: textarea
+    attributes: 
+      label: "Additional Context"
+      description: "Everything else needed for it to be fixed"
+  - type: checkboxes
+    attributes: 
+      label: Checkout
+      options:
+        - label: "I have changed the title"
+          required: true
+        - label: "I have filled out all required"
+          required: true
+        - label: "I have checked for duplicates"
+          required: true
