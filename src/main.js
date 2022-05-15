@@ -20,13 +20,21 @@ function start() {
         const rest = new REST({ version: '9' }).setToken(json.read(new json.Files().CONFIG, ['t']));
         rest.put(Routes.applicationGuildCommands(c.user.id, json.read(new json.Files().CONFIG, ['guild_id'])), { body: app_interactions })
             .then(() => Logging.debug('App Interactions registered'));
+        
+        client.user.setPresence({
+            activities: [{ 
+                name: "users in the VoiceChannels",
+                type: "WATCHING"
+            }],
+            status: "online"
+        });
 
         await va.check_voice(bot);
     }); 
     bot.once('apiRequest', async (r) => {
-        await startup.check_loop();
+        await startup.check_loop(bot);
     });
-
+    
 
     // Member Join
     bot.on('guildMemberAdd', (m) => {

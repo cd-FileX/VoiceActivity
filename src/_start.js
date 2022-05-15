@@ -7,19 +7,19 @@ const rLSync = require('readline-sync');
 var r;
 
 
-function startUp() { 
+function startUp(bot, logout) { 
     if (!fs.existsSync('./config.json')) fs.writeFileSync('./config.json', "{}");
     const config = require('./config.json');
     if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "manual_update": false}));
     const local_versions = require('./version_data.json');
     if (!fs.existsSync('./last_active.json', 'r')) fs.writeFileSync('./last_active.json', "{}");
-    // GITHUB_EINRICHTEN__TODO
+
 
     var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
 
     for (var file in version_data) {
         if (version_data[file] != local_versions[file]) {
-            if (file == "manual_update") { if (version_data[file] == true) console.log("! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js") }
+            if (file == "manual_update") { if (version_data[file] == true) return console.log("! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js") }
             else {
                 console.log(`Updating ${file} to ${version_data[file]}...`);
 
@@ -61,9 +61,14 @@ function startUp() {
         }
     }
     fs.writeFileSync("./version_data.json", JSON.stringify(version_data));
+
+    if (logout) {
+        bot.destroy();
+        main.start();
+    }
 }
 
-startUp();
+startUp(null, false);
 const main = require('./main.js');
 const { resolve } = require('path');
 const { rejects } = require('assert');
@@ -73,13 +78,13 @@ main.start();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 
-async function check_loop() {
+async function check_loop(bot) {
     while (true) {
         await sleep(3600000);
 
         var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
     
-        if (version_data != require('./version_data.json')) startUp();
+        if (version_data != require('./version_data.json')) startUp(bot, true);
     }
 }
 module.exports.check_loop = check_loop;

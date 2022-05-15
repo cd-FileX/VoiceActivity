@@ -71,7 +71,20 @@ async function respond_check_activity(config, caller, cmd) {
         Logging.log(caller.member.displayName+' requested VoiceActivity');
 
         if (!cmd && caller.content.split('.')[1]) {
-            member = caller.guild.members.cache.get(caller.content.split('.')[1]);
+            try {
+                member = caller.guild.members.cache.get(caller.content.split('.')[1]);
+            } catch (e) {
+                m_nouser_emb = new dsc.MessageEmbed({title: "Wrong User Format", 
+                    description: "_check-va.[USER_**ID**]", 
+                    color: config.danger_color});
+                return cmd ? caller.reply({embeds: [m_nouser_emb]}) : caller.channel.send({embeds: [m_nouser_emb]});
+            }
+            if (!member) {
+                m_nouser_emb = new dsc.MessageEmbed({title: "Wrong User Format", 
+                    description: "_check-va.[USER_**ID**]", 
+                    color: config.danger_color});
+                return cmd ? caller.reply({embeds: [m_nouser_emb]}) : caller.channel.send({embeds: [m_nouser_emb]});
+            }
         } 
         else if (cmd) member = caller.targetMember;
 
