@@ -1,0 +1,11 @@
+{
+	"t": "TOKEN",
+	"moderating_whitelist": ["IDS"],
+	"guild_id": "ID", 
+	"log_channel_id": "ID", 
+	"success_color": "0fbd30", 
+	"warning_color": "bc8911", 
+	"danger_color": "bc1038", 
+	"bot_color": "90bd11",
+	"logging_level": 4
+}
