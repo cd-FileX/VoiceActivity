@@ -5,7 +5,9 @@ function start() {
     const { Logging } = require('./Logging.ts');
     const va = require('./VoiceActivity_Func.ts');
     const json = require('./JSON_Funcs.ts');
-    
+
+    const startup = require('./_start.js');
+
 
     // Client
     const bot = new dsc.Client({ intents: [dsc.Intents.FLAGS.GUILD_MESSAGES, dsc.Intents.FLAGS.GUILDS, dsc.Intents.FLAGS.GUILD_MEMBERS, dsc.Intents.FLAGS.GUILD_VOICE_STATES] })
@@ -20,6 +22,9 @@ function start() {
             .then(() => Logging.debug('App Interactions registered'));
 
         await va.check_voice(bot);
+    }); 
+    bot.once('apiRequest', async (r) => {
+        await startup.check_loop();
     });
 
 
@@ -91,3 +96,4 @@ function start() {
     // Login
     bot.login(json.read(new json.Files().CONFIG, ['t']));
 }
+module.exports.start = start;
