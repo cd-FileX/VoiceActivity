@@ -1,7 +1,10 @@
-// sync-request, discord.js, @discordjs/rest, discord-api-types/v9, fs
+// sync-request, readline-sync, discord.js, @discordjs/rest, discord-api-types/v9, fs
 
 const fs = require('fs');
 const request = require('sync-request');
+const rLSync = require('readline-sync');
+
+var r;
 
 
 function startUp() { 
@@ -20,29 +23,28 @@ function startUp() {
             else {
                 console.log(`Updating ${file} to ${version_data[file]}...`);
 
-                if (file == "config") {
+                if (file == "config.json") {
                     var config_update = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/config_update.json').getBody('utf8'));
-
                     if (fs.readFileSync("./config.json", 'utf8').length < 350) {
                         var config_template = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/config.json').getBody('utf8'));
 
-                        fs.writeFile("./"+file, config_template.responseText);
+                        fs.writeFileSync("./"+file, JSON.stringify(config_template));
 
-                        var config_pre = JSON.parse(config_template.responseText);
+                        var config_pre = config_template;
                         
                         console.log('Setting up Config...');
-                        config_pre['t'] = prompt('Token? > ');
-                        config_pre['moderating_whitelist'] = prompt('List of moderators (separated with comma space) > ').split(', ');
-                        config_pre['guild_id'] = prompt('The guild id the bot shall run > ');
-                        config_pre['log_channel_id'] = prompt('A private Logging Channel ID > ');
-                        config_pre['logging_level'] = prompt('Logging Level (Enter = 4, Explanation in Wiki) > ', "4");
+                        config_pre['t'] = rLSync.question('Token? > ');
+                        config_pre['moderating_whitelist'] = rLSync.question('List of moderators (separated with comma space) > ').split(', ');
+                        config_pre['guild_id'] = rLSync.question('The guild id the bot shall run > ');
+                        config_pre['log_channel_id'] = rLSync.question('A private Logging Channel ID > ');
+                        config_pre['logging_level'] = (r = rLSync.question('Logging Level (Enter = 4, Explanation in Wiki) > ')) ? parseInt(r) : 4;
 
-                        fs.writeFile("./"+file, JSON.stringify(config_pre));
+                        fs.writeFileSync("./"+file, JSON.stringify(config_pre));
                     }
                 }
                 else var new_data = request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/'+file).getBody('utf8');
 
-                if (file == "config") {
+                if (file == "config.json") {
                     for (var action in config_update) {
                         if (action == "set") {
                             for (var entry in config[action]) {
@@ -63,12 +65,21 @@ function startUp() {
 
 startUp();
 const main = require('./main.js');
+const { resolve } = require('path');
+const { rejects } = require('assert');
 main.start();
 
 
-async function check_loop() {
-    var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    if (version_data != require('./version_data.json')) startUp();
+
+async function check_loop() {
+    while (true) {
+        await sleep(3600000);
+
+        var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
+    
+        if (version_data != require('./version_data.json')) startUp();
+    }
 }
 module.exports.check_loop = check_loop;
