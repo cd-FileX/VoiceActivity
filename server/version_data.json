@@ -1,0 +1,8 @@
+{
+	"config.json": "1.0.0",
+	"JSON_Funcs.ts": "1.0.0",
+	"Logging.ts": "1.0.0",
+	"main.js": "1.0.0",
+	"VoiceActivity_Func.ts": "1.0.0",
+	"manual_update": false
+}
