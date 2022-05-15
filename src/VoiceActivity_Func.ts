@@ -73,7 +73,7 @@ async function respond_check_activity(config, caller, cmd) {
         if (!cmd && caller.content.split('.')[1]) {
             member = caller.guild.members.cache.get(caller.content.split('.')[1]);
         } 
-        else if (cmd) member = caller.member;
+        else if (cmd) member = caller.targetMember;
 
         else {
             m_nouser_emb = new dsc.MessageEmbed({title: "You forgot the user", 

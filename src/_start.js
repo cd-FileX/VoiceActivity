@@ -1,4 +1,4 @@
-// sync-request, readline-sync, discord.js, @discordjs/rest, discord-api-types/v9, fs
+// sync-request readline-sync discord.js @discordjs/rest discord-api-types fs
 
 const fs = require('fs');
 const request = require('sync-request');
