@@ -1,8 +1,11 @@
 {
-	"config.json": "1.0.0",
-	"JSON_Funcs.ts": "1.0.0",
-	"Logging.ts": "1.0.0",
-	"main.js": "1.0.1",
-	"VoiceActivity_Func.ts": "1.0.2",
-	"manual_update": true
+	"start_script": "1.0.0", 
+	"check-va.ts": "0.0.0", 
+	"config.json": "1.0.0", 
+	"JSON_Funcs.ts": "1.1.0", 
+	"leaderboard.ts": "1.0.0", 
+	"Logging.ts": "1.0.0", 
+	"main.js": "1.1.0", 
+	"VA_Basic.ts": "1.0.0", 
+	"other": ["node_modules", "last_active.json", "leaderboards.json", "package.json", "package-lock.json"]
 }
