@@ -1,6 +1,6 @@
 {
 	"start_script": "1.0.1", 
-	"check-va.ts": "0.0.0", 
+	"check-va.ts": "1.0.0", 
 	"config.json": "1.0.0", 
 	"JSON_Funcs.ts": "1.1.0", 
 	"leaderboard.ts": "1.0.0", 
