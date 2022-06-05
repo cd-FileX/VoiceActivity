@@ -3,7 +3,9 @@ function start() {
     const { REST } = require('@discordjs/rest');
     const { Routes } = require('discord-api-types/v9');
     const { Logging } = require('./Logging.ts');
-    const va = require('./VoiceActivity_Func.ts');
+    const va_b = require('./VA_Basic.ts');
+    const check_va = require('./check-va.ts');
+    const leaderboard = require('./leaderboard.ts');
     const json = require('./JSON_Funcs.ts');
 
     const startup = require('./_start.js');
@@ -21,15 +23,15 @@ function start() {
         rest.put(Routes.applicationGuildCommands(c.user.id, json.read(new json.Files().CONFIG, ['guild_id'])), { body: app_interactions })
             .then(() => Logging.debug('App Interactions registered'));
         
-        client.user.setPresence({
+        bot.user.setPresence({
             activities: [{ 
                 name: "users in the VoiceChannels",
                 type: "WATCHING"
             }],
             status: "online"
-        });
+        }); // APEX_SCHREIBEN_MIT_ISSUES_IN_ABOUT__TODO
 
-        await va.check_voice(bot);
+        await va_b.check_voice(bot);
     }); 
     bot.once('apiRequest', async (r) => {
         await startup.check_loop(bot);
@@ -38,12 +40,12 @@ function start() {
 
     // Member Join
     bot.on('guildMemberAdd', (m) => {
-        va.join_warning(json.read(new json.Files().CONFIG, ''), m);
+        va_b.join_warning(json.read(new json.Files().CONFIG, ''), m);
     });
 
 
     // Bei Mute, Deafen, Leave oder Join
-    bot.on('voiceStateUpdate', va.voice_state(bot));
+    bot.on('voiceStateUpdate', va_b.voice_state(bot));
 
 
     const app_interactions = [
@@ -73,6 +75,23 @@ function start() {
                     },
                     required: true
                 }]
+            },
+            {
+                name: "leaderboard",
+                description: "Sends the leaderboard",
+                description_localizations: {
+                    de: "Sendet die Rangliste"
+                },
+                type: 1, 
+                options: [{
+                    type: 3,  // String
+                    name: "date_or_all",
+                    description: "Enter a date (you get the format from the wiki) or just `all`",
+                    description_localizations: {
+                        de: "Gib ein Datum (das Format bekommst du im Wiki) oder `all` ein",
+                    },
+                    required: true
+                }]
             }],
             dm_permission: false,
             default_member_permissions: (1 << 13).toString()
@@ -89,16 +108,19 @@ function start() {
         }
     ];
 
-
+    // LEADERBOARD_IMPLEMENT_MIT_DELETED_ODER_SEITE_FETCHEN__TODO
     // Slash Command & User Context
     bot.on('interactionCreate', async interact => {
-        if (interact.isCommand() || interact.isUserContextMenu()) await va.respond_check_activity(json.read(new json.Files().CONFIG, ''), interact, true);
+        if (interact.isCommand() && interact.commandName.includes("check-va") || interact.isUserContextMenu()) await check_va.respond_check_activity(json.read(new json.Files().CONFIG, ''), interact, true);
+        else if (interact.isCommand() && interact.command.includes('leaderboard')) await leaderboard.respond_leaderboard(bot, json.read(new json.Files().CONFIG, ''), interact, true);
+        else if (interact.isButton() || interact.isModalSubmit()) await leaderboard.page_scroll(bot, json.read(new json.Files().CONFIG, ''), interact);
     });
 
 
     // Message Respond
     bot.on('messageCreate', async msg => {
-        if (msg.content.startsWith('_check-va')) await va.respond_check_activity(json.read(new json.Files().CONFIG, ''), msg);
+        if (msg.content.startsWith('_check-va')) await check_va.respond_check_activity(json.read(new json.Files().CONFIG, ''), msg, false);
+        else if (msg.content.startsWith('_leaderboard')) await leaderboard.respond_leaderboard(bot, json.read(new json.Files().CONFIG, ''), msg, false);
     });
 
     // Login

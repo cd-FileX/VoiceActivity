@@ -1,10 +1,11 @@
 const fs = require('fs');
 
-
+// json array append function (id: .., time: ..)__TODO
 class Files {
     constructor() {
         this.CONFIG = "./config.json";
-        this.ACTIVITY = "./last_active.json"
+        this.ACTIVITY = "./last_active.json";
+        this.BOARD = "./leaderboards.json";
     }
 }
 module.exports.Files = Files;
@@ -37,3 +38,14 @@ function write(f, k, v) {
     return 1;
 }
 module.exports.write = write;
+
+
+function append(f, k, v) {
+    write(f, k, read(f, k).push(v))
+}
+module.exports.append = append;
+
+
+function remove(f, k, i) {
+    write(f, k, read(f, k).splice(i, 1));
+}

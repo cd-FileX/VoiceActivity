@@ -10,16 +10,17 @@ var r;
 function startUp(bot, logout) { 
     if (!fs.existsSync('./config.json')) fs.writeFileSync('./config.json', "{}");
     const config = require('./config.json');
-    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "manual_update": false}));
+    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "start_script": "1.0.0"}));
     const local_versions = require('./version_data.json');
-    if (!fs.existsSync('./last_active.json', 'r')) fs.writeFileSync('./last_active.json', "{}");
+    if (!fs.existsSync('./activity.json')) fs.writeFileSync('./activity.json', "{}");
+    if (!fs.existsSync('./leaderboards.json')) fs.writeFileSync('./leaderboards.json', "{}");
 
 
     var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
 
     for (var file in version_data) {
         if (version_data[file] != local_versions[file]) {
-            if (file == "manual_update") { if (version_data[file] == true) return console.log("! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js") }
+            if (file == "start_script") { console.log(`! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js`); return false }
             else {
                 console.log(`Updating ${file} to ${version_data[file]}...`);
 
@@ -66,13 +67,13 @@ function startUp(bot, logout) {
         bot.destroy();
         main.start();
     }
+    return true;
 }
 
-startUp(null, false);
-const main = require('./main.js');
-const { resolve } = require('path');
-const { rejects } = require('assert');
-main.start();
+if (startUp(null, false)) {
+    const main = require('./main.js');
+    main.start();
+}
 
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
