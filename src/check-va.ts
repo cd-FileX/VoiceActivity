@@ -26,7 +26,7 @@ async function respond_check_activity(config, caller, cmd) {
                 return caller.reply({embeds: [emb]});
             }
         } 
-        else if (cmd) member = caller.targetMember || caller.options.get('user');
+        else if (cmd) member = caller.targetMember || caller.options.getMember('user');
 
         else {
             emb = new MessageEmbed({title: "You forgot the user", 
@@ -34,8 +34,13 @@ async function respond_check_activity(config, caller, cmd) {
                 color: config.danger_color});
             return caller.reply({embeds: [emb]});
         }
+        
+        if (member.user.bot) {
+            emb = new MessageEmbed({title: "User is a bot", color: config.danger_color});
+            return caller.reply({embeds: [emb]});
+        }
 
-        if ((l_a = json.read(new json.Files().ACTIVITY, [member.id, 'last']))) {
+        if ((l_a = json.read(new json.Files().ACTIVITY, [member.id]))) {
             emb = new MessageEmbed({title: "Last seen:", 
                 description: `<@${member.id}> was last time at ${Formatters.time(new Date(l_a), 'f')} (measured in ${new Date().getTimezoneOffset() / 60}h from UTC) in a voice channel.`, 
                 color: config.success_color});

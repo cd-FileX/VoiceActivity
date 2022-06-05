@@ -1,19 +1,21 @@
-// sync-request readline-sync discord.js @discordjs/rest discord-api-types fs
+// npm install sync-request readline-sync discord.js @discordjs/rest discord-api-types fs
 
 const fs = require('fs');
 const request = require('sync-request');
 const rLSync = require('readline-sync');
 
-var r;
+var r, fn;
 
 
 function startUp(bot, logout) { 
     if (!fs.existsSync('./config.json')) fs.writeFileSync('./config.json', "{}");
     const config = require('./config.json');
-    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "start_script": "1.0.0"}));
+    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"start_script": "1.0.0", "check-va.ts": "0.0.0", "config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "leaderboard.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "other": ["node_modules", "last_active.json", "leaderboards.json", "package.json", "package-lock.json"]}));
     const local_versions = require('./version_data.json');
-    if (!fs.existsSync('./activity.json')) fs.writeFileSync('./activity.json', "{}");
+    if (!fs.existsSync('./last_active.json')) fs.writeFileSync('./last_active.json', "{}");
+    console.log(fs.existsSync('./last_active.json'));
     if (!fs.existsSync('./leaderboards.json')) fs.writeFileSync('./leaderboards.json', "{}");
+    console.log(fs.existsSync('./leaderboards.json'));
 
 
     var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
@@ -21,6 +23,7 @@ function startUp(bot, logout) {
     for (var file in version_data) {
         if (version_data[file] != local_versions[file]) {
             if (file == "start_script") { console.log(`! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js`); return false }
+            else if (file == "other") {}
             else {
                 console.log(`Updating ${file} to ${version_data[file]}...`);
 
@@ -51,6 +54,9 @@ function startUp(bot, logout) {
                             for (var entry in config[action]) {
                                 config[entry] = config_update[action][entry];
                             }
+                        } 
+                        else if (action == "remove") {
+                            for (var i = 0; i < config_update[action].length; i++) delete config[config_update[action][i]];
                         }
                     }
                 }
@@ -61,6 +67,8 @@ function startUp(bot, logout) {
             }
         }
     }
+    for (file in (fn = fs.readdirSync('./'))) if (!((file in version_data) || (file in version_data[other]))) console.log(`File ${file} is no longer needed, you can delete it`)
+
     fs.writeFileSync("./version_data.json", JSON.stringify(version_data));
 
     if (logout) {

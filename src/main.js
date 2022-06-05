@@ -29,17 +29,17 @@ function start() {
                 type: "WATCHING"
             }],
             status: "online"
-        }); // APEX_SCHREIBEN_MIT_ISSUES_IN_ABOUT__TODO
+        });
 
-        await va_b.check_voice(bot);
+        await va_b.check_voice();
     }); 
-    bot.once('apiRequest', async (r) => {
-        await startup.check_loop(bot);
-    });
+    //bot.once('apiRequest', async r => {
+    //    await startup.check_loop(bot);
+    //});
     
 
     // Member Join
-    bot.on('guildMemberAdd', (m) => {
+    bot.on('guildMemberAdd', m => {
         va_b.join_warning(json.read(new json.Files().CONFIG, ''), m);
     });
 
@@ -107,13 +107,45 @@ function start() {
             default_member_permissions: (1 << 13).toString()
         }
     ];
+    const page_modal = {
+        title: "Goto...",
+        custom_id: "leaderboard-goto-submit",
+        components: [
+            {
+                type: 1, 
+                components: [{
+                    type: 4, 
+                    custom_id: "leaderboard-goto-user",
+                    style: 1,
+                    label: "User",
+                    min_length: 1,
+                    required: false,
+                    placeholder: "Name or ID"
+                }]
+            }, {
+                type: 1,
+                components: [{
+                    type: 4,
+                    custom_id: "leaderboard-goto-page",
+                    style: 1,
+                    label: "Page",
+                    min_length: 1,
+                    max_length: 2,
+                    required: false,
+                    placeholder: "The Page."
+                }]
+            }
+        ]
+    }
 
-    // LEADERBOARD_IMPLEMENT_MIT_DELETED_ODER_SEITE_FETCHEN__TODO
-    // Slash Command & User Context
+    // Interaction Responds
     bot.on('interactionCreate', async interact => {
-        if (interact.isCommand() && interact.commandName.includes("check-va") || interact.isUserContextMenu()) await check_va.respond_check_activity(json.read(new json.Files().CONFIG, ''), interact, true);
-        else if (interact.isCommand() && interact.command.includes('leaderboard')) await leaderboard.respond_leaderboard(bot, json.read(new json.Files().CONFIG, ''), interact, true);
-        else if (interact.isButton() || interact.isModalSubmit()) await leaderboard.page_scroll(bot, json.read(new json.Files().CONFIG, ''), interact);
+        // check-va, leaderboard, leaderboard-prev & -next, leaderboard-goto, leaderboard-goto-modal-submit
+        if (interact.isCommand() && interact.options.getSubcommand() == "check-va" || interact.isUserContextMenu()) await check_va.respond_check_activity(json.read(new json.Files().CONFIG, ''), interact, true);
+        else if (interact.isCommand() && interact.options.getSubcommand() == "leaderboard") await leaderboard.respond_leaderboard(bot, json.read(new json.Files().CONFIG, ''), interact, true);
+        else if (interact.componentType == "BUTTON" && interact.customId.includes('leaderboard') && interact.customId != "leaderboard-goto") await leaderboard.page_scroll(bot, json.read(new json.Files().CONFIG, ''), interact);
+        else if (interact.componentType == "BUTTON" && interact.customId == "leaderboard-goto") { await interact.showModal(page_modal); }
+        else if (interact.customId == "leaderboard-goto-submit") await leaderboard.page_scroll(bot, json.read(new json.Files().CONFIG, ''), interact);
     });
 
 
