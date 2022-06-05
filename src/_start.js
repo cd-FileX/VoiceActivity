@@ -4,7 +4,7 @@ const fs = require('fs');
 const request = require('sync-request');
 const rLSync = require('readline-sync');
 
-var r, fn;
+var r, fn, d;
 
 
 function startUp(bot, logout) { 
@@ -13,9 +13,7 @@ function startUp(bot, logout) {
     if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"start_script": "1.0.0", "check-va.ts": "0.0.0", "config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "leaderboard.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VA_Basic.ts": "0.0.0", "other": ["node_modules", "last_active.json", "leaderboards.json", "package.json", "package-lock.json"]}));
     const local_versions = require('./version_data.json');
     if (!fs.existsSync('./last_active.json')) fs.writeFileSync('./last_active.json', "{}");
-    console.log(fs.existsSync('./last_active.json'));
     if (!fs.existsSync('./leaderboards.json')) fs.writeFileSync('./leaderboards.json', "{}");
-    console.log(fs.existsSync('./leaderboards.json'));
 
 
     var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
@@ -67,7 +65,7 @@ function startUp(bot, logout) {
             }
         }
     }
-    for (file in (fn = fs.readdirSync('./'))) if (!((file in version_data) || (file in version_data[other]))) console.log(`File ${file} is no longer needed, you can delete it`)
+    for (i = 0; i < (fn = fs.readdirSync('./')).length; i++) if (!((version_data.hasOwnProperty(fn[i])) || (version_data.other.includes(fn[i])) || fn[i] == "_start.js")) console.log(`File ${fn[i]} is no longer needed, you can delete it`);
 
     fs.writeFileSync("./version_data.json", JSON.stringify(version_data));
 
