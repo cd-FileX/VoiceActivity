@@ -10,7 +10,7 @@ var r, fn;
 function startUp(bot, logout) { 
     if (!fs.existsSync('./config.json')) fs.writeFileSync('./config.json', "{}");
     const config = require('./config.json');
-    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"start_script": "1.0.0", "check-va.ts": "0.0.0", "config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "leaderboard.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VoiceActivity_Func.ts": "0.0.0", "other": ["node_modules", "last_active.json", "leaderboards.json", "package.json", "package-lock.json"]}));
+    if (!fs.existsSync('./version_data.json')) fs.writeFileSync('./version_data.json', JSON.stringify({"start_script": "1.0.0", "check-va.ts": "0.0.0", "config.json": "0.0.0", "JSON_Funcs.ts": "0.0.0", "leaderboard.ts": "0.0.0", "Logging.ts": "0.0.0", "main.js": "0.0.0", "VA_Basic.ts": "0.0.0", "other": ["node_modules", "last_active.json", "leaderboards.json", "package.json", "package-lock.json"]}));
     const local_versions = require('./version_data.json');
     if (!fs.existsSync('./last_active.json')) fs.writeFileSync('./last_active.json', "{}");
     console.log(fs.existsSync('./last_active.json'));
