@@ -17,7 +17,7 @@ function startUp(bot, logout) {
 
 
     var version_data = JSON.parse(request('GET', 'https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/server/version_data.json').getBody('utf8'));
-
+    
     for (var file in version_data) {
         if (version_data[file] != local_versions[file]) {
             if (file == "start_script") { console.log(`! - Manual Update required\n! - Please copy the content of https://raw.githubusercontent.com/FlexGamesGitHub/VoiceActivity/main/src/_start.js to ./_start.js`); return false }

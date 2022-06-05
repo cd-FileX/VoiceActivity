@@ -33,9 +33,9 @@ function start() {
 
         await va_b.check_voice();
     }); 
-    //bot.once('apiRequest', async r => {
-    //    await startup.check_loop(bot);
-    //});
+    bot.once('apiRequest', async r => {
+        await startup.check_loop(bot);
+    });
     
 
     // Member Join
